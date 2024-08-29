@@ -42,6 +42,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+
 st.markdown("# Despesas declaradas por partidos")
 
 st.markdown(html, unsafe_allow_html=True)
