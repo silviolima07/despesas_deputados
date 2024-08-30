@@ -88,9 +88,6 @@ save_report_to_markdown(response_partido)
 
 # Salvar plot code
 save_plot_code(response_partido, 'questao_partido.py')
-
-input_filename  = 'questao_partido.py'
-output_filename = 'questao_partido.py'
  
   
   
