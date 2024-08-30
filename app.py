@@ -21,7 +21,7 @@ total_gasto2 = numerize.numerize(total_gasto)
 st.markdown("## Relatório de Despesas")
 st.markdown("### Fonte: https://dadosabertos.camara.leg.br/")
 
-st.sidebar.markdown("### Menu")
+st.sidebar.markdown("## Menu")
 option = st.sidebar.selectbox("Menu", ["Analises", 'About'], label_visibility='hidden')
     
 if option == 'Analises':
