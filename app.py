@@ -16,12 +16,12 @@ df = pd.read_csv("df_partido.csv")
 df.sort_values('Valor (R$)',inplace=True)
 
 total_gasto = df['Valor (R$)'].sum()
-total_gasto = numerize.numerize(total_gasto)
+total_gasto2 = numerize.numerize(total_gasto)
 
 st.markdown("## Relatório de Despesas")
 st.markdown("### Fonte: https://dadosabertos.camara.leg.br/")
 
-st.subheader(f'Total de gastos declarados: R${total_gasto}')
+st.subheader(f'Total de gastos declarados: R${total_gasto2}')
 st.subheader(f'Periodo: de janeiro até mês atual')
 st.markdown('##### Data de extração via API: 27/08/2024')
 
@@ -44,6 +44,7 @@ st.markdown("""
 
 
 st.markdown("# Despesas declaradas por partidos")
+st.markdown("#### K = Mil / M = Milhoes / B = Bilhoes")
 
 st.markdown(html, unsafe_allow_html=True)
 
@@ -184,5 +185,70 @@ ax2.set_title("\n\nTop 10 Deputados x Despesa\n", fontsize=22)
 
 # Exibindo o gráfico
 st.pyplot(fig2)
+
+################################################################
+st.write(" ") 
+st.write(" ")
+
+st.markdown("# Checar despesas de Deputado")
+
+df = pd.read_csv("dep.csv")
+
+lista_dep = df['nome'].unique()
+st.markdown("### Selecione um Deputado")
+nome_dep = st.selectbox("Selecione um deputado", lista_dep, label_visibility='hidden')
+
+if st.button('Enviar'):
+    
+    temp_desp = df.loc[df.nome == nome_dep].reset_index()
+    partido = temp_desp.partido.astype('string')
+    total_gasto = temp_desp['Valor (R$)'].sum()
+    total_gasto = numerize.numerize(total_gasto)
+    
+    st.subheader("Deputado: "+nome_dep)
+    st.subheader("Partido: "+partido[0])
+    st.subheader(f'Total de gastos declarados: R${total_gasto}')
+    
+    
+    temp_desp = temp_desp.groupby(['Tipo_despesa', 'Data', 'Fornecedor'])['Valor (R$)'].sum().reset_index().sort_values(by='Valor (R$)')
+    #temp_desp = temp_desp[['Tipo_despesa', 'Data', 'Fornecedor', 'Valor (R$)']]
+    # Adicionando estilo CSS
+    html3 = temp_desp.to_html(index=False, classes='table table-striped')
+
+    # Exibindo com Streamlit
+    st.markdown("""
+    <style>
+        .table {
+            width: 100%;
+            font-size: 18px;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    st.markdown(html3, unsafe_allow_html=True)
+    
+    # Agrupamento por Fornecedor
+    temp_forn = temp_desp.groupby('Fornecedor')['Valor (R$)'].sum().reset_index().sort_values(by='Valor (R$)')
+    fig3, ax3 = plt.subplots(figsize=(20,10))
+
+    #if graph_dep == "Bar":
+    ax3.barh(temp_forn['Fornecedor'], temp_forn['Valor (R$)'], color='red')
+    ax3.set_xlabel("Valor (R$)", fontsize=20)
+    ax3.set_ylabel("Fornecedor", fontsize=24)
+    ax3.set_title("\nGasto por Fornecedor\n", fontsize=22)
+    ax3.tick_params(axis='x', labelsize=18)  # Tamanho das fontes dos ticks do eixo x
+    ax3.tick_params(axis='y', labelsize=18)  # Tamanho das fontes dos ticks do eixo y
+
+    #ax3.set_xticks(ax1.get_xticks()) 
+    #ax3.set_xticklabels(ax1.get_xticklabels(), ha='right', fontsize=18)
+    st.pyplot(fig3)
+
+    st.write(" ") 
+    st.write(" ") 
+    
+    
+    
+    
+    
+    
 
 
