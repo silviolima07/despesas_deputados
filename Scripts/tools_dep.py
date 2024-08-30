@@ -244,7 +244,7 @@ def merge_data():
 
 #get_all_desp()
 
-merge_data()
+# merge_data()
 
 
 
